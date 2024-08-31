@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        input{
+            height: 28px;
+            text-align: center;
+            font-size: 18px;
+        }
+        button{
+            height: 35px;
+            width: 80px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: blueviolet;
+            border: 2px solid blueviolet;
+            color: white;
+            border-radius: 5px;
+        }
+        .weatherrpt{
+            margin:40px;
+            font-size: 20px;
+            padding:10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #data-div{
+            width: 150%;
+            margin-top: 5%;
+        }
+        .data{
+            margin: 2%;
+        }
+        #dt{
+            color:blue;
+        }
+        #error{
+            color: red;
+            font-size: 20px;
+            margin-top: 5%;
+        }
+    </style>
+</head>
+<div class="weatherrpt">
+  <div>
+    <input type="text" id="inp"/>
+    <button id="btn" onclick="getdata()">Fetch </button>
+    <div id="data-div">
+        
+        <div id="city" class="data">
+            Location &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+            <div id="dl"></div>
+        </div>
+
+        <div id="temperature" class="data">
+            Temperature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+            <div id="dt"></div>
+        </div>
+        <div id="description" class="data">
+            Weather Description&nbsp;:
+            <div id="dwd"></div>
+        </div>
+        <div id="error" class="data">
+
+        </div>
+    </div>
+    </div>
+</div>
+    
+</body>
+<script>
+    const getdata = async() => {
+        const location = document.getElementById('inp').value;
+        const url = `https://api.weatherstack.com/current?access_key=a797f32e22f1b18d586ecbda325c6360&query=${location}`;
+        const options = {
+            method: "GET",
+        };
+        try {
+            const response = await fetch(url, options);
+            const result = await response.json();
+            if(result.success==false){
+                document.getElementById('error').innerHTML = `No city Found With The Given Name`;
+            }
+            else{
+                console.log(result.query)
+                document.getElementById('error').innerHTML = ``;
+                // Accessing the query, weather description, and temperature
+                const query = result.request.query;
+                const weatherDescription = result.current.weather_descriptions[0];
+                const temperature = result.current.temperature;
+                // const weatherIconUrl = result.current.weather_icons[0];
+
+                // document.getElementById('img').src = weatherIconUrl;
+                document.getElementById('city').innerHTML = ` Location &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${query}`;
+                document.getElementById('temperature').innerHTML = ` Temperature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${temperature}°C`;
+                document.getElementById('description').innerHTML = `Weather Description&nbsp;: ${weatherDescription}`;
+            }
+          
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>
+
+</html>
